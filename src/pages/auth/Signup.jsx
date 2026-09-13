@@ -8,10 +8,11 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase/config.js"
 import Buttons from "../../componets/Buttons";
 import Input from "../../componets/Input";
+import {Link} from "react-router-dom"
+import {Typography} from "@mui/material";
 
 const Signup = () => {
 
-    const provider = new GoogleAuthProvider();
 
     const [form, setForm] = useState({
         email: "",
@@ -36,10 +37,10 @@ const Signup = () => {
 
             console.log(response)
 
-            if(response.user) {
+            if (response.user) {
                 return toast.success("Signup successfully.!")
             }
-         
+
 
         } catch (error) {
 
@@ -50,9 +51,9 @@ const Signup = () => {
 
             if (errorMessage === "auth/email-already-in-use" || errorCode === "auth/email-already-in-use") {
                 return toast.error("user already existing!")
-            }else if(errorMessage === "auth/weak-password" || errorCode === "auth/weak-password") {
+            } else if (errorMessage === "auth/weak-password" || errorCode === "auth/weak-password") {
                 return toast.warning("Password should be at least 6 charaters!")
-            }else if(errorMessage === "auth/invalid-email" || errorCode === "auth/invalid-email") {
+            } else if (errorMessage === "auth/invalid-email" || errorCode === "auth/invalid-email") {
                 return toast.error("Invalid Email")
             }
 
@@ -62,7 +63,18 @@ const Signup = () => {
 
     }
 
-    const signupWithGoogleHandler = () => {
+    const signupWithGoogleHandler = async () => {
+        console.log("ab sign up with google wala function chal raha hai")
+
+        try {
+            const provider = new GoogleAuthProvider();
+            let response = await signInWithPopup(auth, provider)
+
+            console.log(response)
+
+        } catch (error) {
+            console.log(error)
+        }
 
     }
 
@@ -88,12 +100,17 @@ const Signup = () => {
                 <Input handler={handleInputChange} label="Enter your Password" type="password" value={form.password} />
 
                 <Box className="flex justify-center mb-3">
-                    <Buttons title={"Signup with Google"} />
+                    <Buttons handler={signupWithGoogleHandler} title={"Signup with Google"} />
                 </Box>
 
                 <Box className="flex justify-center ">
                     <Buttons handler={signupHandler} title={"Signup"} />
                 </Box>
+
+                    <Link to={"/login"}><Typography sx={{
+                        margin: "10px 0",
+                        textAlign: "center"
+                    }}>Go to login page</Typography></Link>
 
             </Paper>
             <ToastContainer />
