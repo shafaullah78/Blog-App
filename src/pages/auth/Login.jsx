@@ -8,8 +8,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import { auth } from "../../firebase/config.js"
 import Buttons from "../../componets/Buttons";
 import Input from "../../componets/Input";
+import SignupwithGoogle from "../../componets/SignupwithGoogle.jsx";
 import { Navigate, useNavigate, Link } from "react-router-dom";
-import {Typography} from "@mui/material";
+import { Typography } from "@mui/material";
 
 const Login = () => {
 
@@ -25,7 +26,11 @@ const Login = () => {
         console.log("Handle working", value)
 
         setForm((prev) => ({ ...prev, [key]: value }))
+
     }
+
+
+
 
     const LoginHandler = async () => {
 
@@ -38,8 +43,8 @@ const Login = () => {
             console.log(response)
 
             if (response.user) {
-                toast.success("Login successfully.!")
-                return
+                return toast.success("Login successfully.!")
+
             }
 
 
@@ -58,26 +63,11 @@ const Login = () => {
                 return toast.error("Invalid Email")
             }
 
-
-
         }
 
     }
 
-    const LoginWithGoogleHandler = async () => {
-        console.log("ab login with google wala function chal raha hai")
 
-        try {
-            const provider = new GoogleAuthProvider();
-            let response = await signInWithPopup(auth, provider)
-
-            console.log(response)
-
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
 
     return (
 
@@ -111,9 +101,7 @@ const Login = () => {
                     value={form.password}
                 />
 
-                <Box className="flex justify-center mb-3">
-                    <Buttons handler={LoginWithGoogleHandler} title={"Login with Google"} />
-                </Box>
+                <SignupwithGoogle />
 
                 <Box className="flex justify-center ">
                     <Buttons handler={LoginHandler} title={"Login"} />
@@ -130,6 +118,6 @@ const Login = () => {
 
         </Box>
     )
-}
 
+}
 export default Login

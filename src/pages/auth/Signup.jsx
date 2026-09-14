@@ -2,17 +2,41 @@ import { Box, Paper } from "@mui/material";
 import { useState } from "react"
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from 'react-toastify';
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import SignupwithGoogle from "../../componets/SignupwithGoogle.jsx";
+import { doc, setDoc } from "firebase/firestore";
 
-
-import { auth } from "../../firebase/config.js"
+import { auth, db } from "../../firebase/config.js"
 import Buttons from "../../componets/Buttons";
 import Input from "../../componets/Input";
-import {Link} from "react-router-dom"
-import {Typography} from "@mui/material";
+import { Link } from "react-router-dom"
+import { Typography } from "@mui/material";
+
+export const saveDataIntoDB = async (name = "", password, data) => {
+
+    console.log(data)
+    
+    
+    try {
+
+        const userDataSaved = await setDoc(doc(db, "users", data.uid), {
+            Email: data.email,
+            Password: password,
+            Name: data.displayName ? data.displayName : name,
+            photoURL: data.photoURL ? data.photoURL : "",
+        });
+
+        console.log("user data saved!", userDataSaved)
+
+    } catch (error) {
+
+        console.log(error)
+
+    }
+
+}
+
 
 const Signup = () => {
-
 
     const [form, setForm] = useState({
         email: "",
@@ -20,12 +44,14 @@ const Signup = () => {
         username: ""
     })
 
+
     const handleInputChange = (key, value) => {
 
         console.log("Handle working", value)
 
         setForm((prev) => ({ ...prev, [key]: value }))
     }
+
 
     const signupHandler = async () => {
 
@@ -38,6 +64,9 @@ const Signup = () => {
             console.log(response)
 
             if (response.user) {
+
+                saveDataIntoDB(form.username, form.password, response.user)
+
                 return toast.success("Signup successfully.!")
             }
 
@@ -57,26 +86,9 @@ const Signup = () => {
                 return toast.error("Invalid Email")
             }
 
-
-
         }
-
     }
 
-    const signupWithGoogleHandler = async () => {
-        console.log("ab sign up with google wala function chal raha hai")
-
-        try {
-            const provider = new GoogleAuthProvider();
-            let response = await signInWithPopup(auth, provider)
-
-            console.log(response)
-
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
 
     return (
 
@@ -87,6 +99,7 @@ const Signup = () => {
             height: "100vh",
 
         }}>
+
             <Paper sx={{
                 boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                 padding: "10px",
@@ -99,18 +112,16 @@ const Signup = () => {
                 <Input handler={handleInputChange} label="Enter your Email" type="email" value={form.email} />
                 <Input handler={handleInputChange} label="Enter your Password" type="password" value={form.password} />
 
-                <Box className="flex justify-center mb-3">
-                    <Buttons handler={signupWithGoogleHandler} title={"Signup with Google"} />
-                </Box>
+                <SignupwithGoogle />
 
                 <Box className="flex justify-center ">
                     <Buttons handler={signupHandler} title={"Signup"} />
                 </Box>
 
-                    <Link to={"/login"}><Typography sx={{
-                        margin: "10px 0",
-                        textAlign: "center"
-                    }}>Go to login page</Typography></Link>
+                <Link to={"/login"}><Typography sx={{
+                    margin: "10px 0",
+                    textAlign: "center"
+                }}>Go to login page</Typography></Link>
 
             </Paper>
             <ToastContainer />
@@ -119,4 +130,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default Signup;
