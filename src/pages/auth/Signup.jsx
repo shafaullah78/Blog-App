@@ -8,14 +8,14 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase/config.js"
 import Buttons from "../../componets/Buttons";
 import Input from "../../componets/Input";
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import { Typography } from "@mui/material";
 
 export const saveDataIntoDB = async (name = "", password, data) => {
 
     console.log(data)
-    
-    
+
+
     try {
 
         const userDataSaved = await setDoc(doc(db, "users", data.uid), {
@@ -66,8 +66,8 @@ const Signup = () => {
             if (response.user) {
 
                 saveDataIntoDB(form.username, form.password, response.user)
-
-                return toast.success("Signup successfully.!")
+                toast.success("Signup successfully.!")
+                return
             }
 
 
@@ -108,9 +108,29 @@ const Signup = () => {
 
                 <h1 className="text-3xl font-bold text-center mb-4">Sign Up Page</h1>
 
-                <Input handler={handleInputChange} label="Enter your username" type="username" value={form.username} />
-                <Input handler={handleInputChange} label="Enter your Email" type="email" value={form.email} />
-                <Input handler={handleInputChange} label="Enter your Password" type="password" value={form.password} />
+                <Input
+                    handler={handleInputChange}
+                    label="Enter your username"
+                    type="text"
+                    id="username"
+                    value={form.username}
+                />
+
+                <Input
+                    handler={handleInputChange}
+                    label="Enter your Email"
+                    id="email"
+                    type="email"
+                    value={form.email}
+                />
+
+                <Input
+                    handler={handleInputChange}
+                    label="Enter your Password"
+                    type="password"
+                    id="password"
+                    value={form.password}
+                />
 
                 <SignupwithGoogle />
 

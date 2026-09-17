@@ -13,11 +13,30 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase/config.js';
+import { signOut } from 'firebase/auth';
 
 const pages = [{ name: "Home", url: "/" }, { name: "Blog", url: "/blog" }];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
+
+    const logoutHandler = async () => {
+
+        try {
+
+            await signOut(auth);
+
+            console.log("Logout successfully")
+
+        } catch (error) {
+
+            console.log("Logout nahi ho raha hai error hai", error)
+
+        }
+
+    }
+
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -86,10 +105,10 @@ function Navbar() {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
-                            {pages.map((page) => (  
-                                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                                        <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
-                                    </MenuItem>
+                            {pages.map((page) => (
+                                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                    <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                                </MenuItem>
                             ))}
                         </Menu>
                     </Box>
@@ -114,15 +133,15 @@ function Navbar() {
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                           <Link to={`${page.url}`}>
-                            <Button
-                                key={page.name}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page.name}
-                            </Button>
-                           </Link>
+                            <Link to={`${page.url}`}>
+                                <Button
+                                    key={page.name}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page.name}
+                                 </Button>
+                            </Link>
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
@@ -148,7 +167,7 @@ function Navbar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                <MenuItem key={setting} onClick={setting === "Logout" ? logoutHandler: handleCloseUserMenu}>
                                     <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                                 </MenuItem>
                             ))}

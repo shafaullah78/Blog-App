@@ -43,8 +43,9 @@ const Login = () => {
             console.log(response)
 
             if (response.user) {
-                return toast.success("Login successfully.!")
-
+                
+                toast.success("Login successfully.!")
+                
             }
 
 

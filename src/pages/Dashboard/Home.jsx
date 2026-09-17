@@ -6,7 +6,7 @@ function Home() {
     return (
         <>
                 
-        <Navbar />
+        This is the Home page
 
         </>
     )
