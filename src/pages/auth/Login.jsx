@@ -92,6 +92,7 @@ const Login = () => {
                     handler={handleInputChange}
                     label="Enter your Email"
                     type="email"
+                    id="email"
                     value={form.email}
                 />
 
@@ -99,6 +100,7 @@ const Login = () => {
                     handler={handleInputChange}
                     label="Enter your Password"
                     type="password"
+                    id="password"
                     value={form.password}
                 />
 

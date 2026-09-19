@@ -27,9 +27,7 @@ const Blog = () => {
 
       }
 
-
     });
-
 
   }
 
@@ -41,11 +39,14 @@ const Blog = () => {
   })
 
   return (
+
     <>
 
       <Navbar user={user} />
 
       <CreateModal />
+
+
 
     </>
 

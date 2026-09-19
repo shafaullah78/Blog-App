@@ -5,6 +5,11 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Input from './Input';
 import Buttons from './Buttons';
+import { uploadImagesToCloudnary } from '../Cloudnary/Cloudnary.js';
+import { db, auth } from '../firebase/config.js';
+import { addDoc, serverTimestamp, collection } from 'firebase/firestore';
+
+
 
 const style = {
     position: 'absolute',
@@ -17,6 +22,7 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
+
 
 export default function CreateModal() {
 
@@ -31,11 +37,42 @@ export default function CreateModal() {
     const handleClose = () => setOpen(false);
 
     const handleInputChange = (key, value) => {
-        setBlogForm((prev) => ({...prev, [key]: value}))
+        setBlogForm((prev) => ({ ...prev, [key]: value }))
+    }
+
+    const saveDataIntoDB = async (url, data, userId) => {
+
+
+
+
+        try {
+
+             const userId = auth.currentUser.uid
+
+            await addDoc(collection(db, "blogs"), {
+
+                blogImgUrl: url,
+                title: blogForm.title,
+                description: data.description,
+                authorId: userId,
+                createdAt: serverTimestamp()
+
+
+
+            });
+
+            console.log("")
+
+        } catch (error) {
+
+            console.log(error)
+
+        }
+
     }
 
 
-    const postBlogHandler = () => {
+    const postBlogHandler = async () => {
 
         try {
 
@@ -43,9 +80,20 @@ export default function CreateModal() {
 
             console.log(blogForm)
 
+            const response = await uploadImagesToCloudnary(blogForm.file)
+
+            console.log(response)
+
+            const imageUrl = response.secure_url
+
+            saveDataIntoDB(imageUrl, blogForm)
+            // console.log("Image Url: ", imageUrl)
+
+
         } catch (error) {
 
             console.log("Post blog handler is not working properly")
+            console.log(error)
 
         }
 
@@ -86,7 +134,7 @@ export default function CreateModal() {
                         type="file"
                         handler={handleInputChange}
                         id="file"
-                        value={blogForm.file}
+                    // value={blogForm.file}
                     />
 
                     <Buttons
@@ -98,4 +146,5 @@ export default function CreateModal() {
             </Modal>
         </div>
     );
+
 }
