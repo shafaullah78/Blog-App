@@ -10,7 +10,6 @@ import { db, auth } from '../firebase/config.js';
 import { addDoc, serverTimestamp, collection } from 'firebase/firestore';
 
 
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -42,12 +41,9 @@ export default function CreateModal() {
 
     const saveDataIntoDB = async (url, data, userId) => {
 
-
-
-
         try {
 
-             const userId = auth.currentUser.uid
+            const userId = auth.currentUser.uid
 
             await addDoc(collection(db, "blogs"), {
 
@@ -57,11 +53,9 @@ export default function CreateModal() {
                 authorId: userId,
                 createdAt: serverTimestamp()
 
-
-
             });
 
-            console.log("")
+            console.log("Blog created successfully")
 
         } catch (error) {
 
@@ -70,7 +64,6 @@ export default function CreateModal() {
         }
 
     }
-
 
     const postBlogHandler = async () => {
 

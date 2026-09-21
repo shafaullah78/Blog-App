@@ -15,6 +15,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { onAuthStateChanged } from 'firebase/auth/web-extension';
+import { auth } from '../firebase/config';
+import { doc, deleteDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
 
 
 
@@ -43,14 +47,62 @@ const ExpandMore = styled((props) => {
     ],
 }));
 
-export default function RecipeReviewCard({blog}) {
+export default function RecipeReviewCard({ blog }) {
 
     const [expanded, setExpanded] = React.useState(false);
+
+    const [userId, setUserId] = React.useState("")
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
+
+    const getUsersData = async () => {
+
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (user) {
+
+                const uid = user.uid;
+
+                console.log("User", user)
+                setUserId(uid)
+
+            } else {
+
+                setUserId(null)
+
+            }
+
+        });
+
+    }
+
+    React.useEffect(() => {
+        getUsersData()
+    }, [])
+
+    const deleteHandler = async (blogId) => {
+
+        console.log(blogId)
+
+        try {
+            await deleteDoc(doc(db, "blogs", blogId));
+
+            console.log("Blog deleted successfully");
+
+        } catch (error) {
+            console.log("Delete error:", error);
+        }
+
+    }
+
+
+    const editHandler = ({blog}) => {
+        console.log("Yes edit button pr click kia to ye function chal raha hai", blog)
+    }
 
 
     return (
@@ -74,8 +126,8 @@ export default function RecipeReviewCard({blog}) {
                 component="img"
                 // height="194"
                 sx={{
-                      height: 200,
-                      objectFit:"cover"
+                    height: 200,
+                    objectFit: "cover"
                 }}
                 image={blog.blogImgUrl}
                 alt={blog.title}
@@ -85,23 +137,28 @@ export default function RecipeReviewCard({blog}) {
                     {blog.description}
                 </Typography>
             </CardContent>
-            <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
+
+
+            {blog.authorId == userId ? (<CardActions disableSpacing>
+                <IconButton onClick={() => editHandler(blog)} aria-label="add to favorites">
                     <EditIcon />
                 </IconButton>
-                <IconButton aria-label="share">
+                <IconButton onClick={() => deleteHandler(blog.id)} aria-label="share">
                     <DeleteIcon />
                 </IconButton>
                 <ExpandMore
+
                     expand={expanded}
                     onClick={handleExpandClick}
                     aria-expanded={expanded}
                     aria-label="show more"
+
                 >
                     <ExpandMoreIcon />
                 </ExpandMore>
-            </CardActions>
-
+            </CardActions>) : ""}
         </Card>
+
     );
+
 }

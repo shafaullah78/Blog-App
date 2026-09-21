@@ -3,7 +3,7 @@ import Navbar from "../../componets/Navbar"
 import BlogCards from "../../componets/BlogCards"
 import { useState, useEffect } from "react";
 
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 
@@ -40,16 +40,13 @@ function Home() {
         getCardData()
     }, [])
 
-    useEffect(()=> {
-        console.log("All blogs ka current data: ", allBlogs)
-        console.log("All blogs ki total length: ", allBlogs.length)
-    })
-
 
     return (
         <>
+            
             <Navbar />
-            <h1 className="text-center text-3xl mt-5 mb-8">All Blogs</h1>
+
+            <h1 className="text-center text-3xl mt-5 mb-8 underline">All Blogs</h1>
 
 
             <div className='flex justify-around gap-5px flex-wrap'>
